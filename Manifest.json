@@ -1,0 +1,28 @@
+{
+  "$schema": "https://qooxdoo.org/schema/Manifest-1-0-0.json",
+  "info": {
+    "name": "qxl.testnode",
+    "summary": "Run qooxdoo tests with qx test in an node enviroment",
+    "description": "",
+    "homepage": "",
+    "license": "MIT license",
+    "authors": [
+      {
+        "name": "Henner Kollmann (hkollmann)",
+        "email": "Henner.Kollmann@gmx.de"
+      }
+    ],
+    "version": "1.0.0"
+  },
+  "provides": {
+    "namespace": "qxl.testnode",
+    "encoding": "utf-8",
+    "class": "source/class",
+    "resource": "source/resource",
+    "translation": "source/translation"
+  },
+  "requires": {
+    "@qooxdoo/framework": "^6.0.0-beta",
+    "@qooxdoo/compiler": "^1.0.0-beta"
+  }
+}
