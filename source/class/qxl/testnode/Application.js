@@ -1,19 +1,24 @@
 /* ************************************************************************
 
-   Copyright:
+   Copyright: Henner Kollmann 2020
 
    License:
+     MIT: https://opensource.org/licenses/MIT
+     See the LICENSE file in the project's top-level directory for details.
 
    Authors:
+   * Henner Kollmann (hkollmann) Henner.Kollmann@gmx.de
 
 ************************************************************************ */
+const path = require("path");
+const fs = require("fs");      
 
 /**
  * This is the main application class of your custom application "qxl.testnode".
  *
  * If you have added resources to your app, remove the first '@' in the
  * following line to make use of them.
- * @@asset(qxl/testnode/*)
+ * @asset(qxl/testnode/*)
  *
  */
 qx.Class.define("qxl.testnode.Application",
@@ -27,16 +32,17 @@ qx.Class.define("qxl.testnode.Application",
         } else if (qx.core.Environment.get("runtime.name") == "node.js") {
           qx.log.Logger.register(qx.log.appender.NodeConsole);
         }
-        await this.runTest();
+        let argv = window.minimist(process.argv.slice(2));        
+        await this.runTest(argv);
         return this._fail;
       },
 
-      runTest: async function () {
+      runTest: async function (argv) {
         this._cnt = 0;
         this._fail = 0;
         this._failed = {};
-        let argv = process.argv || {};
-        let namespace = qx.core.Environment.get("testnode.testNameSpace") || "qx.test";        
+
+        let namespace = qx.core.Environment.get("testnode.testNameSpace") || "qx.test";
         this.loader = new qx.dev.unit.TestLoaderBasic();
         this.loader.setTestNamespace(namespace);
         let clazzes = this.loader.getSuite().getTestClasses();
@@ -141,5 +147,6 @@ qx.Class.define("qxl.testnode.Application",
       _cnt: null,
       _fail: null,
       _failed: null
+
     }
   });

@@ -1,13 +1,15 @@
 /* ************************************************************************
 
-   Copyright:
+   Copyright: Henner Kollmann 2020
 
    License:
+     MIT: https://opensource.org/licenses/MIT
+     See the LICENSE file in the project's top-level directory for details.
 
    Authors:
+   * Henner Kollmann (hkollmann) Henner.Kollmann@gmx.de
 
 ************************************************************************ */
-
 /**
  * This class demonstrates how to define unit tests for your application.
  *
