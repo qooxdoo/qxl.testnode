@@ -1,7 +1,7 @@
-# qxl.nodetest
-Qooxdoo tests with node 
+# qxl.testnode
+Run Qooxdoo Unit tests in an node enviroment
 
-## Adding an testnode to your own code
+## Adding testnode to your own code
 ```
 $ npx qx package update
 $ npx qx package install qooxdoo/qxl.testnode
