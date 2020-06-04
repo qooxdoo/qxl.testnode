@@ -45,7 +45,7 @@
         "qx.event.handler.Pointer",
         "qx.event.handler.Gesture",
         "qx.event.handler.PointerCore"
-      ],
+      ]
     }
   },
   "requires": {
