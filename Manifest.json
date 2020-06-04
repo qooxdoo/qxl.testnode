@@ -25,7 +25,28 @@
     "encoding": "utf-8",
     "class": "source/class",
     "resource": "source/resource",
-    "translation": "source/translation"
+    "translation": "source/translation",
+    "application": {
+      "class": "qxl.testnode.Application",
+      "name": "testnode",
+      "title": "Qooxdoo Testnode",
+      "type": "node",
+      "environment": {
+        "testnode.testNameSpace": "qxl.testnode.test"
+      },
+      "include": [
+        "qx.core.BaseInit",
+        "myapp.test.*"
+      ],
+      "exclude": [
+        "qx.bom.Selector",
+        "qx.bom.client.Html",
+        "qx.bom.client.Plugin",
+        "qx.event.handler.Pointer",
+        "qx.event.handler.Gesture",
+        "qx.event.handler.PointerCore"
+      ],
+    }
   },
   "requires": {
     "@qooxdoo/framework": "^6.0.0-beta",
