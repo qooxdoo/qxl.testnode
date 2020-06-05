@@ -87,7 +87,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         });
         proc.stderr.on('data', (data) => {
           let val = data.toString();
-          console.error(val); s
+          console.error(val); 
         });
         proc.on('close', code => {
           resolve(code);
