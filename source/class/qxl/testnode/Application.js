@@ -27,11 +27,6 @@ qx.Class.define("qxl.testnode.Application",
     members:
     {
       main: async function () {
-        if (qx.core.Environment.get("runtime.name") == "rhino") {
-          qx.log.Logger.register(qx.log.appender.RhinoConsole);
-        } else if (qx.core.Environment.get("runtime.name") == "node.js") {
-          qx.log.Logger.register(qx.log.appender.NodeConsole);
-        }
         let argv = window.minimist(process.argv.slice(2));        
         await this.runTest(argv);
         return this._fail;
