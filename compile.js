@@ -47,7 +47,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
       }
       let target = app.maker.getTarget();
       let outputDir = target.getOutputDir();
-      let boot = path.join(outputDir, app.name, "boot.js");
+      let boot = path.join(outputDir, app.name, "index.js");
       let args = [];
       args.push(boot);
       if (app.argv.method) {
