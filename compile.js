@@ -45,6 +45,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         qx.tool.compiler.Console.print("Please install qxl.testnode package!");
         return qx.Promise.resolve(false);
       }
+      qx.tool.compiler.Console.print("Run unit tests via qxl.testnode");
       let target = app.maker.getTarget();
       let outputDir = target.getOutputDir();
       let boot = path.join(outputDir, app.name, "index.js");
@@ -64,12 +65,12 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           shell: true
         });
         proc.stdout.on('data', (data) => {
-          let arr = data.toString().split("\n");
+          let arr = data.toString().trim().split("\n");
           // value is serializable
           arr.forEach(val => {
             if (val.match(/^\d+\.\.\d+$/)) {
               console.log(`DONE testing ${Ok} ok, ${notOk} not ok`);
-              result.errorCode += notOk;
+              result.setExitCode(notOk);
             } else if (val.match(/^not ok /)) {
               notOk++;
               qx.tool.compiler.Console.log(val);
@@ -86,7 +87,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           });
         });
         proc.stderr.on('data', (data) => {
-          let val = data.toString();
+          let val = data.toString().trim();
           console.error(val); 
         });
         proc.on('close', code => {
