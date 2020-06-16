@@ -60,6 +60,9 @@ qx.Class.define("qxl.testnode.LibraryApi", {
       return new qx.Promise((resolve, reject) => {
         let notOk = 0;
         let Ok = 0;
+        if (app.argv.diag) {
+              console.log(`run node ${args}`);
+        }
         let proc = child_process.spawn('node', args, {
           cwd: '.',
           shell: true

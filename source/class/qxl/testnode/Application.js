@@ -43,7 +43,7 @@ qx.Class.define("qxl.testnode.Application",
         let clazzes = this.loader.getSuite().getTestClasses();
         if (argv.class) {
           let matcher = new RegExp(argv.class);
-          this.info("# running only test classes that match " + matcher);
+          console.log("# running only test classes that match " + matcher);
           clazzes = clazzes.filter(clazz => clazz.getName().match(matcher));
         }
 
@@ -53,24 +53,24 @@ qx.Class.define("qxl.testnode.Application",
             pChain = pChain.then(() =>
               this.runAll(argv, clazz)
                 .then(() => {
-                  this.info(`# done testing ${clazz.getName()}.`);
+                  console.log(`# done testing ${clazz.getName()}.`);
                 })
             );
           }
         );
 
         return pChain.then(() => {
-          this.info(`1..${this._cnt}`);
+          console.log(`1..${this._cnt}`);
         });
       },
 
       runAll: function (argv, clazz) {
         let that = this;
-        this.info(`# start testing ${clazz.getName()}.`);
+        console.log(`# start testing ${clazz.getName()}.`);
         let methods = clazz.getTestMethods();
         if (argv.method) {
           let matcher = new RegExp(argv.method);
-          this.info("# running only test methods that match " + matcher);
+          console.log("# running only test methods that match " + matcher);
           methods = methods.filter(method => method.getName().match(matcher));
         }
 
@@ -100,7 +100,7 @@ qx.Class.define("qxl.testnode.Application",
                 if (item.exception) {
                   if (item.exception.message) {
                     message = item.exception.message;
-                    this.info(`not ok ${that._cnt} - ${test} - ${message}`);
+                    console.log(`not ok ${that._cnt} - ${test} - ${message}`);
                   } else {
                     this.error("# " + item.exception);
                   }
@@ -112,19 +112,19 @@ qx.Class.define("qxl.testnode.Application",
             setTimeout(next, 0);
           };
           testResult.addListener("startTest", evt => {
-            this.info("# start " + evt.getData().getFullName());
+            console.log("# start " + evt.getData().getFullName());
           });
           testResult.addListener("wait", evt => {
-            this.info("# wait " + evt.getData().getFullName());
+            console.log("# wait " + evt.getData().getFullName());
           });
           testResult.addListener("endMeasurement", evt => {
-            this.info("# endMeasurement " + evt.getData()[0].test.getFullName());
+            console.log("# endMeasurement " + evt.getData()[0].test.getFullName());
           });
           testResult.addListener("endTest", evt => {
             let test = evt.getData().getFullName();
             if (!that._failed[test]) {
               that._cnt++;
-              this.info(`ok ${that._cnt} - ` + test);
+              console.log(`ok ${that._cnt} - ` + test);
             }
             setTimeout(next, 0);
           });
@@ -134,7 +134,7 @@ qx.Class.define("qxl.testnode.Application",
             that._cnt++;
             let test = evt.getData()[0].test.getFullName();
             that._failed[test] = true;
-            this.info(`ok ${that._cnt} - # SKIP ${test}`);
+            console.log(`ok ${that._cnt} - # SKIP ${test}`);
           });
           next();
         });
@@ -142,6 +142,5 @@ qx.Class.define("qxl.testnode.Application",
       _cnt: null,
       _fail: null,
       _failed: null
-
     }
   });
