@@ -6,11 +6,17 @@
       "outputPath": "compiled/source",
       "bundle": {
         "include": "qx.*"
+      },
+      "babelOptions": {
+        "targets": "node >= 12"
       }
     },
     {
       "type": "build",
-      "outputPath": "compiled/build"
+      "outputPath": "compiled/build",
+      "babelOptions": {
+        "targets": "node >= 12"
+      }
     }
   ],
   "defaultTarget": "source",

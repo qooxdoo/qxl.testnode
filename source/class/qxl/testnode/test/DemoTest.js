@@ -24,43 +24,54 @@
  */
 qx.Class.define("qxl.testnode.test.DemoTest",
   {
-    extend : qx.dev.unit.TestCase,
+    extend: qx.dev.unit.TestCase,
 
-    include : [qx.dev.unit.MRequirementsBasic],
+    include: [qx.dev.unit.MRequirementsBasic],
 
-    members :
-  {
-    /*
-    ---------------------------------------------------------------------------
-      TESTS
-    ---------------------------------------------------------------------------
-    */
-  
-    /**
-     * Here are some simple tests
-     */
-    testSimple : function() {
-      this.assertEquals(4, 3+1, "This should never fail!");
-      this.assertFalse(false, "Can false be true?!");
-    },
+    members:
+    {
+      /*
+      ---------------------------------------------------------------------------
+        TESTS
+      ---------------------------------------------------------------------------
+      */
 
-    /**
-     * Here are some more advanced tests
-     */
-    testAdvanced: function () {
-      var a = 3;
-      var b = a;
-      this.assertIdentical(a, b, "A rose by any other name is still a rose");
-      this.assertInRange(3, 1, 10, "You must be kidding, 3 can never be outside [1,10]!");
-    },
+      /**
+       * Here are some simple tests
+       */
+      testSimple: function () {
+        this.assertEquals(4, 3 + 1, "This should never fail!");
+        this.assertFalse(false, "Can false be true?!");
+      },
 
-    hasNodeJs : function() {
-      return qx.core.Environment.get("runtime.name") == "node.js";
-    },
+      /**
+       * Here are some more advanced tests
+       */
+      testAdvanced: function () {
+        var a = 3;
+        var b = a;
+        this.assertIdentical(a, b, "A rose by any other name is still a rose");
+        this.assertInRange(3, 1, 10, "You must be kidding, 3 can never be outside [1,10]!");
+      },
 
-    testNodeJs : function() {
-      this.require(["nodeJs"]);
-      // test node stuff
+      hasNodeJs: function () {
+        return qx.core.Environment.get("runtime.name") == "node.js";
+      },
+
+      testNodeJs: function () {
+        this.require(["nodeJs"]);
+        // test node stuff
+      },
+
+      testAsync: async function () {
+        return new Promise(
+          function (resolve) {
+            setTimeout(
+              function () {
+                // We fulfill the promise !
+                resolve();
+              }, Math.random() * 2000 + 1000);
+          });
+      }
     }
-  }
   });

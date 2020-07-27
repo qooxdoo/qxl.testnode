@@ -29,7 +29,7 @@ qx.Class.define("qxl.testnode.Application",
       main: async function () {
         let argv = window.minimist(process.argv.slice(2));        
         await this.runTest(argv);
-        return this._fail;
+        process.exit(this._fail);
       },
 
       runTest: async function (argv) {
