@@ -45,6 +45,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         qx.tool.compiler.Console.print("Please install qxl.testnode package!");
         return qx.Promise.resolve(false);
       }
+      this.require("minimist");
       qx.tool.compiler.Console.print("Run unit tests via qxl.testnode");
       let target = app.maker.getTarget();
       let outputDir = target.getOutputDir();

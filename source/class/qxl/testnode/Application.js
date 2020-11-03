@@ -12,6 +12,7 @@
 ************************************************************************ */
 const path = require("path");
 const fs = require("fs");      
+const minimist = require("minimist");      
 
 /**
  * This is the main application class of your custom application "qxl.testnode".
@@ -27,7 +28,7 @@ qx.Class.define("qxl.testnode.Application",
     members:
     {
       main: async function () {
-        let argv = window.minimist(process.argv.slice(2));        
+        let argv = minimist(process.argv.slice(2));        
         await this.runTest(argv);
         process.exit(this._fail);
       },
