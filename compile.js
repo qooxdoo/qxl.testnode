@@ -53,10 +53,10 @@ qx.Class.define("qxl.testnode.LibraryApi", {
       let args = [];
       args.push(boot);
       if (app.argv.method) {
-        args.push(` method=${app.argv.method}`);
+        args.push(` --method=${app.argv.method}`);
       }
       if (app.argv.class) {
-        args.push(` class=${app.argv.class}`);
+        args.push(` --class=${app.argv.class}`);
       }
       return new qx.Promise((resolve, reject) => {
         let notOk = 0;
