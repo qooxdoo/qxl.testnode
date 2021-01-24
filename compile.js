@@ -74,10 +74,15 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           arr.forEach(val => {
             if (val.match(/^\d+\.\.\d+$/)) {
               console.log(`DONE testing ${Ok} ok, ${notOk} not ok`);
+            result[app.name] = {
+              notOk: notOk,
+              ok: Ok
+            };
               result.setExitCode(notOk);
             } else if (val.match(/^not ok /)) {
               notOk++;
               qx.tool.compiler.Console.log(val);
+              result.setExitCode(notOk);
             } else if (val.match(/^ok\s/)) {
               Ok++;
               if (!app.argv.terse) {
