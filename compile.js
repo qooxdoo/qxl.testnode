@@ -62,7 +62,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         let notOk = 0;
         let Ok = 0;
         if (app.argv.diag) {
-              console.log(`run node ${args}`);
+          console.log(`run node ${args}`);
         }
         let proc = child_process.spawn('node', args, {
           cwd: '.',
@@ -74,10 +74,10 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           arr.forEach(val => {
             if (val.match(/^\d+\.\.\d+$/)) {
               console.log(`DONE testing ${Ok} ok, ${notOk} not ok`);
-            result[app.name] = {
-              notOk: notOk,
-              ok: Ok
-            };
+              result[app.name] = {
+                notOk: notOk,
+                ok: Ok
+              };
               result.setExitCode(notOk);
             } else if (val.match(/^not ok /)) {
               notOk++;
@@ -97,7 +97,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         });
         proc.stderr.on('data', (data) => {
           let val = data.toString().trim();
-          console.error(val); 
+          console.error(val);
         });
         proc.on('close', code => {
           resolve(code);
