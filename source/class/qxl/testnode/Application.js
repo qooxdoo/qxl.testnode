@@ -10,8 +10,6 @@
    * Henner Kollmann (hkollmann) Henner.Kollmann@gmx.de
 
 ************************************************************************ */
-const path = require("path");
-const fs = require("fs");      
 const minimist = require("minimist");      
 
 /**
