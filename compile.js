@@ -46,7 +46,8 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         return qx.Promise.resolve(false);
       }
       this.require("minimist");
-      qx.tool.compiler.Console.print("Run unit tests via qxl.testnode");
+      qx.tool.compiler.Console.print("TAP version 13");
+      qx.tool.compiler.Console.print("# run unit tests via qxl.testnode");
       let target = app.maker.getTarget();
       let outputDir = target.getOutputDir();
       let boot = path.join(outputDir, app.name, "index.js");
