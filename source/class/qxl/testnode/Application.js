@@ -104,10 +104,9 @@ qx.Class.define("qxl.testnode.Application",
                 that._failed[test] = true;
                 that._cnt++;
                 that._fail++;
-                let message = String(item.exception);
                 if (item.exception) {
                   if (item.exception.message) {
-                    message = item.exception.message;
+                    let message = item.exception.message;
                     console.log(`not ok ${that._cnt} - ${test} - [${numberFormat.format(timeDiff)}] - ${message}`);
                   } else {
                     this.error("# " + item.exception);
@@ -145,7 +144,7 @@ qx.Class.define("qxl.testnode.Application",
             that._cnt++;
             let test = evt.getData()[0].test.getFullName();
             that._failed[test] = true;
-            console.log(`ok ${that._cnt} - # SKIP ${test}`);
+            console.log(`ok ${that._cnt} - # SKIP ${test} - ${evt.getData()[0].exception.toString()}`);
           });
           next();
         });
