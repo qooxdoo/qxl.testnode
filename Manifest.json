@@ -12,7 +12,7 @@
         "email": "Henner.Kollmann@gmx.de"
       }
     ],
-    "version": "1.0.14"
+    "version": "1.0.15"
   },
   "provides": {
     "namespace": "qxl.testnode",
