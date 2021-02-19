@@ -106,7 +106,7 @@ qx.Class.define("qxl.testnode.Application",
                 that._fail++;
                 if (item.exception) {
                   if (item.exception.message) {
-                    let message = item.exception.message;
+                    let message = item.exception.toString();
                     console.log(`not ok ${that._cnt} - ${test} - [${numberFormat.format(timeDiff)}] - ${message}`);
                   } else {
                     this.error("# " + item.exception);
