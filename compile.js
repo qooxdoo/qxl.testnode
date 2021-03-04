@@ -62,7 +62,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         let notOk = 0;
         let Ok = 0;
         if (app.argv.diag) {
-              console.log(`run node ${args}`);
+              qx.tool.compiler.Console.log(`run node ${args}`);
         }
         let proc = child_process.spawn('node', args, {
           cwd: '.',
@@ -73,7 +73,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           // value is serializable
           arr.forEach(val => {
             if (val.match(/^\d+\.\.\d+$/)) {
-              console.log(`DONE testing ${Ok} ok, ${notOk} not ok`);
+              qx.tool.compiler.Console.info(`DONE testing ${Ok} ok, ${notOk} not ok`);
               result.setExitCode(notOk);
             } else if (val.match(/^not ok /)) {
               notOk++;
@@ -81,12 +81,12 @@ qx.Class.define("qxl.testnode.LibraryApi", {
             } else if (val.match(/^ok\s/)) {
               Ok++;
               if (!app.argv.terse) {
-                console.log(val);
+                qx.tool.compiler.Console.log(val);
               }
             } else if (val.match(/^#/) && app.argv.diag) {
-              console.log(val);
+              qx.tool.compiler.Console.log(val);
             } else if (app.argv.verbose) {
-              console.log(val);
+              qx.tool.compiler.Console.log(val);
             }
           });
         });
