@@ -85,7 +85,6 @@ qx.Class.define("qxl.testnode.LibraryApi", {
                 ok: Ok
               };
               result.setExitCode(notOk);
-              qx.tool.compiler.Console.log(val);
             } else if (val.match(/^not ok /)) {
               notOk++;
               qx.tool.compiler.Console.log(val);
@@ -98,6 +97,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
             } else if (val.match(/^ok\s/)) {
               Ok++;
               if (!app.argv.terse) {
+                qx.tool.compiler.Console.log(val);
               }
             } else if (val.match(/^#/) && app.argv.diag) {
               qx.tool.compiler.Console.log(val);
