@@ -12,7 +12,7 @@
         "email": "Henner.Kollmann@gmx.de"
       }
     ],
-    "version": "1.0.8"
+    "version": "1.0.15"
   },
   "provides": {
     "namespace": "qxl.testnode",
@@ -43,7 +43,7 @@
     }
   },
   "requires": {
-    "@qooxdoo/framework": "^6.0.0-beta",
-    "@qooxdoo/compiler": "^1.0.0-beta"
+    "@qooxdoo/compiler": "^1.0.0",
+    "@qooxdoo/framework": "^6.0.0 || ^7.0.0-beta"
   }
 }

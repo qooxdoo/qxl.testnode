@@ -10,10 +10,8 @@
    * Henner Kollmann (hkollmann) Henner.Kollmann@gmx.de
 
 ************************************************************************ */
-const path = require("path");
-const fs = require("fs");      
-const minimist = require("minimist");      
-
+const minimist = require("minimist");
+const { performance } = require('perf_hooks');
 /**
  * This is the main application class of your custom application "qxl.testnode".
  *
@@ -28,7 +26,7 @@ qx.Class.define("qxl.testnode.Application",
     members:
     {
       main: async function () {
-        let argv = minimist(process.argv.slice(2));        
+        let argv = minimist(process.argv.slice(2));
         await this.runTest(argv);
         process.exit(this._fail);
       },
@@ -90,18 +88,26 @@ qx.Class.define("qxl.testnode.Application",
               resolve();
             }
           };
+          let startTime;
+          let numberFormat = new qx.util.format.NumberFormat();
+          numberFormat.set({
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+            postfix: " ms"
+          });
           let showExceptions = arr => {
             arr.forEach(item => {
               if (item.test.getFullName) {
+                let endTime = performance.now();
+                let timeDiff = endTime - startTime;
                 let test = item.test.getFullName();
                 that._failed[test] = true;
                 that._cnt++;
                 that._fail++;
-                let message = String(item.exception);
                 if (item.exception) {
                   if (item.exception.message) {
-                    message = item.exception.message;
-                    console.log(`not ok ${that._cnt} - ${test} - ${message}`);
+                    let message = item.exception.toString();
+                    console.log(`not ok ${that._cnt} - ${test} - [${numberFormat.format(timeDiff)}] - ${message}`);
                   } else {
                     this.error("# " + item.exception);
                   }
@@ -114,6 +120,7 @@ qx.Class.define("qxl.testnode.Application",
           };
           testResult.addListener("startTest", evt => {
             console.log("# start " + evt.getData().getFullName());
+            startTime = performance.now();
           });
           testResult.addListener("wait", evt => {
             console.log("# wait " + evt.getData().getFullName());
@@ -122,10 +129,12 @@ qx.Class.define("qxl.testnode.Application",
             console.log("# endMeasurement " + evt.getData()[0].test.getFullName());
           });
           testResult.addListener("endTest", evt => {
-            let test = evt.getData().getFullName();
+            let endTime = performance.now();
+            let timeDiff = endTime - startTime;
+              let test = evt.getData().getFullName();
             if (!that._failed[test]) {
               that._cnt++;
-              console.log(`ok ${that._cnt} - ` + test);
+              console.log(`ok ${that._cnt} - ${test} - [${numberFormat.format(timeDiff)}]`);
             }
             setTimeout(next, 0);
           });
@@ -135,7 +144,7 @@ qx.Class.define("qxl.testnode.Application",
             that._cnt++;
             let test = evt.getData()[0].test.getFullName();
             that._failed[test] = true;
-            console.log(`ok ${that._cnt} - # SKIP ${test}`);
+            console.log(`ok ${that._cnt} - # SKIP ${test} - ${evt.getData()[0].exception.toString()}`);
           });
           next();
         });

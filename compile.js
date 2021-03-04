@@ -1,5 +1,6 @@
 const path = require("path")
 const child_process = require("child_process");
+const { performance } = require('perf_hooks');
 
 qx.Class.define("qxl.testnode.LibraryApi", {
   extend: qx.tool.cli.api.LibraryApi,
@@ -42,11 +43,12 @@ qx.Class.define("qxl.testnode.LibraryApi", {
 
       let app = this.getTestApp("qxl.testnode.Application");
       if (!app) {
-        qx.tool.compiler.Console.print("Please install qxl.testnode package!");
+        qx.tool.compiler.Console.log("Please install qxl.testnode package!");
         return qx.Promise.resolve(false);
       }
       this.require("minimist");
-      qx.tool.compiler.Console.print("Run unit tests via qxl.testnode");
+      qx.tool.compiler.Console.log("TAP version 13");
+      qx.tool.compiler.Console.log("# run unit tests via qxl.testnode");
       let target = app.maker.getTarget();
       let outputDir = target.getOutputDir();
       let boot = path.join(outputDir, app.name, "index.js");
@@ -61,9 +63,11 @@ qx.Class.define("qxl.testnode.LibraryApi", {
       return new qx.Promise((resolve, reject) => {
         let notOk = 0;
         let Ok = 0;
+        let skipped = 0;
         if (app.argv.diag) {
-              qx.tool.compiler.Console.log(`run node ${args}`);
+          qx.tool.compiler.Console.log(`run node ${args}`);
         }
+        let startTime = performance.now();
         let proc = child_process.spawn('node', args, {
           cwd: '.',
           shell: true
@@ -73,11 +77,23 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           // value is serializable
           arr.forEach(val => {
             if (val.match(/^\d+\.\.\d+$/)) {
-              qx.tool.compiler.Console.info(`DONE testing ${Ok} ok, ${notOk} not ok`);
+              let endTime = performance.now();
+              let timeDiff = endTime - startTime;
+              qx.tool.compiler.Console.info(`DONE testing ${Ok} ok, ${notOk} not ok, ${skipped} skipped - [${timeDiff.toFixed(0)} ms]`);
+              result[app.name] = {
+                notOk: notOk,
+                ok: Ok
+              };
               result.setExitCode(notOk);
             } else if (val.match(/^not ok /)) {
               notOk++;
               qx.tool.compiler.Console.log(val);
+              result.setExitCode(notOk);
+            } else if (val.includes("# SKIP")) {
+              skipped++;
+              if (!app.argv.terse) {
+                qx.tool.compiler.Console.log(val);
+              }
             } else if (val.match(/^ok\s/)) {
               Ok++;
               if (!app.argv.terse) {
@@ -92,7 +108,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         });
         proc.stderr.on('data', (data) => {
           let val = data.toString().trim();
-          console.error(val); 
+          qx.tool.compiler.Console.error(val);
         });
         proc.on('close', code => {
           resolve(code);
@@ -112,11 +128,11 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         let apps = tmp.getApplications().filter(app => (app.getClassName() === classname) && !app.isBrowserApp());
         if (apps.length) {
           if (maker) {
-            qx.tool.compiler.Console.print("Found to many makers for app");
+            qx.tool.compiler.Console.print("qx.tool.cli.test.tooManyMakers");
             return null;
           }
           if (apps.length != 1) {
-            qx.tool.compiler.Console.print(`found to many apps for classname ${classname}`);
+            qx.tool.compiler.Console.print("qx.tool.cli.test.tooManyApplications");
             return null;
           }
           maker = tmp;
@@ -124,7 +140,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         }
       });
       if (!app) {
-        qx.tool.compiler.Console.print(`no apps found for classname ${classname}`);
+        qx.tool.compiler.Console.print("qx.tool.cli.test.noAppName");
         return null;
       }
       return {
