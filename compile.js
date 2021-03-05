@@ -43,12 +43,12 @@ qx.Class.define("qxl.testnode.LibraryApi", {
       let result = data.getData();
       let app = this.getTestApp("qxl.testnode.Application");
       if (!app) {
-        qx.tool.compiler.Console.print("Please install qxl.testnode package!");
+        qx.tool.compiler.Console.log("Please install qxl.testnode package!");
         return qx.Promise.resolve(false);
       }
       this.require("minimist");
-      qx.tool.compiler.Console.print("TAP version 13");
-      qx.tool.compiler.Console.print("# run unit tests via qxl.testnode");
+      qx.tool.compiler.Console.log("TAP version 13");
+      qx.tool.compiler.Console.log("# run unit tests via qxl.testnode");
       let target = app.maker.getTarget();
       let outputDir = target.getOutputDir();
       let boot = path.join(outputDir, app.name, "index.js");
@@ -64,7 +64,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         let Ok = 0;
         let skipped = 0;
         if (app.argv.diag) {
-          console.log(`run node ${args}`);
+          qx.tool.compiler.Console.log(`run node ${args}`);
         }
         let startTime = performance.now();
         let proc = child_process.spawn('node', args, {
@@ -96,18 +96,18 @@ qx.Class.define("qxl.testnode.LibraryApi", {
             } else if (val.match(/^ok\s/)) {
               Ok++;
               if (!app.argv.terse) {
-                console.log(val);
+                qx.tool.compiler.Console.log(val);
               }
             } else if (val.match(/^#/) && app.argv.diag) {
-              console.log(val);
+              qx.tool.compiler.Console.log(val);
             } else if (app.argv.verbose) {
-              console.log(val);
+              qx.tool.compiler.Console.log(val);
             }
           });
         });
         proc.stderr.on('data', (data) => {
           let val = data.toString().trim();
-          console.error(val);
+          qx.tool.compiler.Console.error(val);
         });
         proc.on('close', code => {
           resolve(code);
@@ -127,11 +127,11 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         let apps = tmp.getApplications().filter(app => (app.getClassName() === classname) && !app.isBrowserApp());
         if (apps.length) {
           if (maker) {
-            qx.tool.compiler.Console.print("Found to many makers for app");
+            qx.tool.compiler.Console.print("qx.tool.cli.test.tooManyMakers");
             return null;
           }
           if (apps.length != 1) {
-            qx.tool.compiler.Console.print(`found to many apps for classname ${classname}`);
+            qx.tool.compiler.Console.print("qx.tool.cli.test.tooManyApplications");
             return null;
           }
           maker = tmp;
@@ -139,7 +139,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         }
       });
       if (!app) {
-        qx.tool.compiler.Console.print(`no apps found for classname ${classname}`);
+        qx.tool.compiler.Console.print("qx.tool.cli.test.noAppName");
         return null;
       }
       return {
