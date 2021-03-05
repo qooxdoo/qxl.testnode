@@ -39,8 +39,8 @@ qx.Class.define("qxl.testnode.LibraryApi", {
 
 
     __onRunTests: function (data) {
-      let result = data.getData();
 
+      let result = data.getData();
       let app = this.getTestApp("qxl.testnode.Application");
       if (!app) {
         qx.tool.compiler.Console.print("Please install qxl.testnode package!");
@@ -54,11 +54,10 @@ qx.Class.define("qxl.testnode.LibraryApi", {
       let boot = path.join(outputDir, app.name, "index.js");
       let args = [];
       args.push(boot);
-      if (app.argv.method) {
-        args.push(` --method=${app.argv.method}`);
-      }
-      if (app.argv.class) {
-        args.push(` --class=${app.argv.class}`);
+      for (const arg of ["colorize", "verbose", "method", "class"]) {
+        if (app.argv[arg]) {
+          args.push(` --${arg}=${app.argv[arg]}`);
+        }
       }
       return new qx.Promise((resolve, reject) => {
         let notOk = 0;
