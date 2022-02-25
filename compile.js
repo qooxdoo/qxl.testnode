@@ -1,45 +1,46 @@
-const path = require("path")
+const path = require("path");
 const child_process = require("child_process");
-const { performance } = require('perf_hooks');
+const { performance } = require("perf_hooks");
 
 qx.Class.define("qxl.testnode.LibraryApi", {
   extend: qx.tool.cli.api.LibraryApi,
   members: {
-
     async initialize() {
       let yargs = qx.tool.cli.commands.Test.getYargsCommand;
       qx.tool.cli.commands.Test.getYargsCommand = () => {
         let args = yargs();
         args.builder.class = {
           describe: "only run tests of this class",
-          type: "string"
+          type: "string",
         };
+
         args.builder.method = {
           describe: "only run tests of this method",
-          type: "string"
+          type: "string",
         };
+
         args.builder.diag = {
           describe: "show diagnostic output",
-          type: "boolean"
+          type: "boolean",
         };
+
         args.builder.terse = {
           describe: "show only summary and errors",
-          type: "boolean"
+          type: "boolean",
         };
+
         return args;
-      }
+      };
     },
 
-    load: async function () {
+    async load() {
       let command = this.getCompilerApi().getCommand();
       if (command instanceof qx.tool.cli.commands.Test) {
         command.addListener("runTests", this.__onRunTests, this);
       }
     },
 
-
-    __onRunTests: function (data) {
-
+    __onRunTests(data) {
       let result = data.getData();
       let app = this.getTestApp("qxl.testnode.Application");
       if (!app) {
@@ -67,22 +68,28 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           qx.tool.compiler.Console.log(`run node ${args}`);
         }
         let startTime = performance.now();
-        let proc = child_process.spawn('node', args, {
-          cwd: '.',
-          shell: true
+        let proc = child_process.spawn("node", args, {
+          cwd: ".",
+          shell: true,
         });
-        proc.stdout.on('data', (data) => {
+
+        proc.stdout.on("data", (data) => {
           let arr = data.toString().trim().split("\n");
           // value is serializable
-          arr.forEach(val => {
+          arr.forEach((val) => {
             if (val.match(/^\d+\.\.\d+$/)) {
               let endTime = performance.now();
               let timeDiff = endTime - startTime;
-              qx.tool.compiler.Console.info(`DONE testing ${Ok} ok, ${notOk} not ok, ${skipped} skipped - [${timeDiff.toFixed(0)} ms]`);
+              qx.tool.compiler.Console.info(
+                `DONE testing ${Ok} ok, ${notOk} not ok, ${skipped} skipped - [${timeDiff.toFixed(
+                  0
+                )} ms]`
+              );
               result[app.name] = {
                 notOk: notOk,
-                ok: Ok
+                ok: Ok,
               };
+
               result.setExitCode(notOk);
             } else if (val.match(/^not ok /)) {
               notOk++;
@@ -105,33 +112,38 @@ qx.Class.define("qxl.testnode.LibraryApi", {
             }
           });
         });
-        proc.stderr.on('data', (data) => {
+        proc.stderr.on("data", (data) => {
           let val = data.toString().trim();
           qx.tool.compiler.Console.error(val);
         });
-        proc.on('close', code => {
+        proc.on("close", (code) => {
           resolve(code);
         });
-        proc.on('error', () => {
-          reject()
+        proc.on("error", () => {
+          reject();
         });
       });
     },
 
-
-    getTestApp: function (classname) {
+    getTestApp(classname) {
       let command = this.getCompilerApi().getCommand();
       let maker = null;
       let app = null;
-      command.getMakers().forEach(tmp => {
-        let apps = tmp.getApplications().filter(app => (app.getClassName() === classname) && !app.isBrowserApp());
+      command.getMakers().forEach((tmp) => {
+        let apps = tmp
+          .getApplications()
+          .filter(
+            (app) => app.getClassName() === classname && !app.isBrowserApp()
+          );
         if (apps.length) {
           if (maker) {
             qx.tool.compiler.Console.print("qx.tool.cli.test.tooManyMakers");
             return null;
           }
           if (apps.length != 1) {
-            qx.tool.compiler.Console.print("qx.tool.cli.test.tooManyApplications");
+            qx.tool.compiler.Console.print(
+              "qx.tool.cli.test.tooManyApplications"
+            );
             return null;
           }
           maker = tmp;
@@ -146,16 +158,14 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         name: app.getName(),
         argv: command.argv,
         environment: app.getEnvironment(),
-        maker: maker
-      }
+        maker: maker,
+      };
     },
     _cnt: null,
-    _failed: null
-  }
-
-
+    _failed: null,
+  },
 });
 
 module.exports = {
-  LibraryApi: qxl.testnode.LibraryApi
+  LibraryApi: qxl.testnode.LibraryApi,
 };

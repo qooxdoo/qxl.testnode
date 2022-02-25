@@ -4,3 +4,4 @@
 .package-cache.json
 /.vscode
 /node_modules
+/package.json
