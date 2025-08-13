@@ -3,39 +3,51 @@ const child_process = require("child_process");
 const { performance } = require("perf_hooks");
 
 qx.Class.define("qxl.testnode.LibraryApi", {
-  extend: qx.tool.cli.api.LibraryApi,
+  extend: qx.tool.compiler.cli.api.LibraryApi,
   members: {
     async initialize() {
-      let yargs = qx.tool.cli.commands.Test.getYargsCommand;
-      qx.tool.cli.commands.Test.getYargsCommand = () => {
-        let args = yargs();
-        args.builder.class = {
-          describe: "only run tests of this class",
-          type: "string",
-        };
+      let originalCreateCliCommand = qx.tool.compiler.cli.commands.Test.createCliCommand;
+      qx.tool.compiler.cli.commands.Test.createCliCommand = async function(clazz) {
+        let cmd = await originalCreateCliCommand.call(this, clazz);
+        
+        cmd.addFlag(
+          new qx.tool.cli.Flag("class").set({
+            description: "only run tests of this class",
+            type: "string"
+          })
+        );
 
-        args.builder.method = {
-          describe: "only run tests of this method",
-          type: "string",
-        };
+        cmd.addFlag(
+          new qx.tool.cli.Flag("method").set({
+            description: "only run tests of this method", 
+            type: "string"
+          })
+        );
 
-        args.builder.diag = {
-          describe: "show diagnostic output",
-          type: "boolean",
-        };
+        cmd.addFlag(
+          new qx.tool.cli.Flag("diag").set({
+            description: "show diagnostic output",
+            type: "boolean",
+            value: false
+          })
+        );
 
-        args.builder.terse = {
-          describe: "show only summary and errors",
-          type: "boolean",
-        };
+        cmd.addFlag(
+          new qx.tool.cli.Flag("terse").set({
+            description: "show only summary and errors",
+            type: "boolean", 
+            value: false
+          })
+        );
 
-        return args;
+        return cmd;
       };
     },
 
     async load() {
-      let command = this.getCompilerApi().getCommand();
-      if (command instanceof qx.tool.cli.commands.Test) {
+      let compiler = this.getCompilerApi(); 
+      let command = compiler.getCommand();
+      if (command instanceof qx.tool.compiler.cli.commands.Test) {
         command.addListener("runTests", this.__onRunTests, this);
       }
     },
