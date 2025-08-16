@@ -5,26 +5,22 @@ const { performance } = require("perf_hooks");
 qx.Class.define("qxl.testnode.LibraryApi", {
   extend: qx.tool.compiler.cli.api.LibraryApi,
   members: {
-    async initialize() {
-      let originalCreateCliCommand = qx.tool.compiler.cli.commands.Test.createCliCommand;
-      qx.tool.compiler.cli.commands.Test.createCliCommand = async function(clazz) {
-        let cmd = await originalCreateCliCommand.call(this, clazz);
-        
-        cmd.addFlag(
+    async initialize(rootCmd) {
+        rootCmd.addFlag(
           new qx.tool.cli.Flag("class").set({
             description: "only run tests of this class",
             type: "string"
           })
         );
 
-        cmd.addFlag(
+        rootCmd.addFlag(
           new qx.tool.cli.Flag("method").set({
             description: "only run tests of this method", 
             type: "string"
           })
         );
 
-        cmd.addFlag(
+        rootCmd.addFlag(
           new qx.tool.cli.Flag("diag").set({
             description: "show diagnostic output",
             type: "boolean",
@@ -32,7 +28,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           })
         );
 
-        cmd.addFlag(
+        rootCmd.addFlag(
           new qx.tool.cli.Flag("terse").set({
             description: "show only summary and errors",
             type: "boolean", 
