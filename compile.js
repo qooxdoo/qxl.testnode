@@ -35,9 +35,6 @@ qx.Class.define("qxl.testnode.LibraryApi", {
             value: false
           })
         );
-
-        return cmd;
-      };
     },
 
     async load() {
