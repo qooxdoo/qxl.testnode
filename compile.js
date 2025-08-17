@@ -5,36 +5,39 @@ const { performance } = require("perf_hooks");
 qx.Class.define("qxl.testnode.LibraryApi", {
   extend: qx.tool.compiler.cli.api.LibraryApi,
   members: {
-    async initialize(rootCmd) {
-        rootCmd.addFlag(
-          new qx.tool.cli.Flag("class").set({
-            description: "only run tests of this class",
-            type: "string"
-          })
-        );
+    async initialize(cmd) {
+      if (cmd.getName() !== "test") {
+        return;
+      }
+      cmd.addFlag(
+        new qx.tool.cli.Flag("class").set({
+          description: "only run tests of this class",
+          type: "string"
+        })
+      );
 
-        rootCmd.addFlag(
-          new qx.tool.cli.Flag("method").set({
-            description: "only run tests of this method", 
-            type: "string"
-          })
-        );
+      cmd.addFlag(
+        new qx.tool.cli.Flag("method").set({
+          description: "only run tests of this method",
+          type: "string"
+        })
+      );
 
-        rootCmd.addFlag(
-          new qx.tool.cli.Flag("diag").set({
-            description: "show diagnostic output",
-            type: "boolean",
-            value: false
-          })
-        );
+      cmd.addFlag(
+        new qx.tool.cli.Flag("diag").set({
+          description: "show diagnostic output",
+          type: "boolean",
+          value: false
+        })
+      );
 
-        rootCmd.addFlag(
-          new qx.tool.cli.Flag("terse").set({
-            description: "show only summary and errors",
-            type: "boolean", 
-            value: false
-          })
-        );
+      cmd.addFlag(
+        new qx.tool.cli.Flag("terse").set({
+          description: "show only summary and errors",
+          type: "boolean",
+          value: false
+        })
+      );
     },
 
     async load() {
