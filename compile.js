@@ -5,7 +5,7 @@ const { performance } = require("perf_hooks");
 qx.Class.define("qxl.testnode.LibraryApi", {
   extend: qx.tool.compiler.cli.api.LibraryApi,
   members: {
-    async initialize(cmd) {
+    initialize(cmd) {
       if (cmd.getName() !== "test") {
         return;
       }
