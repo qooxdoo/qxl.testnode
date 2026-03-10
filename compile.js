@@ -9,35 +9,43 @@ qx.Class.define("qxl.testnode.LibraryApi", {
       if (cmd.getName() !== "test") {
         return;
       }
-      cmd.addFlag(
-        new qx.tool.cli.Flag("class").set({
-          description: "only run tests of this class",
-          type: "string"
-        })
-      );
+      if (!cmd.getFlag("class")) {
+        cmd.addFlag(
+          new qx.tool.cli.Flag("class").set({
+            description: "only run tests of this class",
+            type: "string"
+          })
+        );
+      }
 
-      cmd.addFlag(
-        new qx.tool.cli.Flag("method").set({
-          description: "only run tests of this method",
-          type: "string"
-        })
-      );
+      if (!cmd.getFlag("method")) {
+        cmd.addFlag(
+          new qx.tool.cli.Flag("method").set({
+            description: "only run tests of this method",
+            type: "string"
+          })
+        );
+      }
 
-      cmd.addFlag(
-        new qx.tool.cli.Flag("diag").set({
-          description: "show diagnostic output",
-          type: "boolean",
-          value: false
-        })
-      );
+      if (!cmd.getFlag("diag")) {
+        cmd.addFlag(
+          new qx.tool.cli.Flag("diag").set({
+            description: "show diagnostic output",
+            type: "boolean",
+            value: false
+          })
+        );
+      }
 
-      cmd.addFlag(
-        new qx.tool.cli.Flag("terse").set({
-          description: "show only summary and errors",
-          type: "boolean",
-          value: false
-        })
-      );
+      if (!cmd.getFlag("terse")) {
+        cmd.addFlag(
+          new qx.tool.cli.Flag("terse").set({
+            description: "show only summary and errors",
+            type: "boolean",
+            value: false
+          })
+        );
+      }
     },
 
     async load() {
@@ -55,7 +63,6 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         qx.tool.compiler.Console.log("Please install qxl.testnode package!");
         return qx.Promise.resolve(false);
       }
-      this.require("minimist");
       qx.tool.compiler.Console.log("TAP version 13");
       qx.tool.compiler.Console.log("# run unit tests via qxl.testnode");
       let target = app.maker.getTarget();

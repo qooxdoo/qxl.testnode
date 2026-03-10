@@ -10,7 +10,6 @@
    * Henner Kollmann (hkollmann) Henner.Kollmann@gmx.de
 
 ************************************************************************ */
-const minimist = require("minimist");
 const { performance } = require("perf_hooks");
 /**
  * This is the main application class of your custom application "qxl.testnode".
@@ -24,7 +23,8 @@ qx.Class.define("qxl.testnode.Application", {
   extend: qx.application.Basic,
   members: {
     async main() {
-      let argv = minimist(process.argv.slice(2));
+      const { parseArgs } = require("util");
+      const { values: argv } = parseArgs({ strict: false });
       await this.runTest(argv);
       process.exit(this._fail);
     },
