@@ -84,7 +84,7 @@ qx.Class.define("qxl.testnode.Application", {
             resolve();
           }
         };
-        let startTime;
+        const startTimes = new Map();
         let numberFormat = new qx.util.format.NumberFormat();
         numberFormat.set({
           maximumFractionDigits: 2,
@@ -95,9 +95,10 @@ qx.Class.define("qxl.testnode.Application", {
         let showExceptions = (arr) => {
           arr.forEach((item) => {
             if (item.test.getFullName) {
-              let endTime = performance.now();
-              let timeDiff = endTime - startTime;
               let test = item.test.getFullName();
+              let startTime = startTimes.get(test) ?? performance.now();
+              let timeDiff = performance.now() - startTime;
+              startTimes.delete(test);
               that._failed[test] = true;
               that._cnt++;
               that._fail++;
@@ -120,8 +121,11 @@ qx.Class.define("qxl.testnode.Application", {
           setTimeout(next, 0);
         };
         testResult.addListener("startTest", (evt) => {
-          console.log("# start " + evt.getData().getFullName());
-          startTime = performance.now();
+          const name = evt.getData().getFullName();
+          console.log("# start " + name);
+          if (!startTimes.has(name)) {
+            startTimes.set(name, performance.now());
+          }
         });
         testResult.addListener("wait", (evt) => {
           console.log("# wait " + evt.getData().getFullName());
@@ -132,9 +136,10 @@ qx.Class.define("qxl.testnode.Application", {
           );
         });
         testResult.addListener("endTest", (evt) => {
-          let endTime = performance.now();
-          let timeDiff = endTime - startTime;
           let test = evt.getData().getFullName();
+          let startTime = startTimes.get(test) ?? performance.now();
+          let timeDiff = performance.now() - startTime;
+          startTimes.delete(test);
           if (!that._failed[test]) {
             that._cnt++;
             console.log(
