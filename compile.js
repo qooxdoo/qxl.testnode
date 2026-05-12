@@ -104,12 +104,9 @@ qx.Class.define("qxl.testnode.LibraryApi", {
                 notOk: notOk,
                 ok: Ok,
               };
-
-              result.setExitCode(notOk);
             } else if (val.match(/^not ok /)) {
               notOk++;
               qx.tool.compiler.Console.log(val);
-              result.setExitCode(notOk);
             } else if (val.includes("# SKIP")) {
               skipped++;
               if (!app.argv.terse) {
@@ -131,8 +128,11 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           let val = data.toString().trim();
           qx.tool.compiler.Console.error(val);
         });
-        proc.on("close", (code) => {
-          resolve(code);
+        proc.on("close", () => {
+          if (notOk > 0) {
+            result.setExitCode(notOk);
+          }
+          resolve();
         });
         proc.on("error", () => {
           reject();
