@@ -79,6 +79,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         let notOk = 0;
         let Ok = 0;
         let skipped = 0;
+        let planSeen = false;
         if (app.argv.diag) {
           qx.tool.compiler.Console.log(`run node ${args}`);
         }
@@ -94,6 +95,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           // value is serializable
           arr.forEach((val) => {
             if (val.match(/^\d+\.\.\d+$/)) {
+              planSeen = true;
               let endTime = performance.now();
               let timeDiff = endTime - startTime;
               qx.tool.compiler.Console.info(
@@ -129,14 +131,23 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           let val = data.toString().trim();
           qx.tool.compiler.Console.error(val);
         });
-        proc.on("close", () => {
-          if (notOk > 0) {
+        proc.on("close", (code, signal) => {
+          if (!planSeen) {
+            // the test process died (uncaught exception, process.exit(),
+            // signal) or never started: not all tests ran
+            qx.tool.compiler.Console.error(
+              `The test process ended before all tests had run (exit code ${code}, signal ${signal})`
+            );
+            // same code as qxl.testtapper uses for an exception during test
+            result.setExitCode(253);
+          } else if (notOk > 0) {
             result.setExitCode(notOk);
           }
           resolve();
         });
-        proc.on("error", () => {
-          reject();
+        proc.on("error", (err) => {
+          // "close" follows; rejecting here would keep qx test from exiting
+          qx.tool.compiler.Console.error(`Cannot run the test process: ${err}`);
         });
       });
     },
