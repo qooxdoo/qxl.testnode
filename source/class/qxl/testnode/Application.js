@@ -102,18 +102,14 @@ qx.Class.define("qxl.testnode.Application", {
               that._failed[test] = true;
               that._cnt++;
               that._fail++;
-              if (item.exception) {
-                if (item.exception.message) {
-                  let message = item.exception.toString();
-                  console.log(
-                    `not ok ${that._cnt} - ${test} - [${numberFormat.format(
-                      timeDiff
-                    )}] - ${message}`
-                  );
-                } else {
-                  this.error("# " + item.exception);
-                }
-              }
+              // every counted failure needs its own "not ok" line, also
+              // when a test throws a string or rejects without a value
+              let message = String(item.exception);
+              console.log(
+                `not ok ${that._cnt} - ${test} - [${numberFormat.format(
+                  timeDiff
+                )}] - ${message}`
+              );
             } else {
               this.error("Unexpected Error - ", item);
             }
