@@ -42,7 +42,7 @@
         "qx.event.handler.PointerCore"
       ],
       "environment": {
-        "testnode.testNameSpace": "qxl.testnode.test"
+        "qxl.testnode.testNameSpace": "qxl.testnode.test"
       }
     }
   ],

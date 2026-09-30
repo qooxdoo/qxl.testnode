@@ -34,8 +34,11 @@ qx.Class.define("qxl.testnode.Application", {
       this._fail = 0;
       this._failed = {};
 
+      // "testnode.testNameSpace" is the old name of the setting
       let namespace =
-        qx.core.Environment.get("testnode.testNameSpace") || "qx.test";
+        qx.core.Environment.get("qxl.testnode.testNameSpace") ||
+        qx.core.Environment.get("testnode.testNameSpace") ||
+        "qx.test";
       this.loader = new qx.dev.unit.TestLoaderBasic();
       this.loader.setTestNamespace(namespace);
       let clazzes = this.loader.getSuite().getTestClasses();
