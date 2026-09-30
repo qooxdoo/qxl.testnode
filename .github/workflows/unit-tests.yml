@@ -1,0 +1,42 @@
+name: Unit Tests
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        node:
+          - '20.x'
+          - '22.x'
+          - '24.x'
+
+      fail-fast: false
+
+    name: Node ${{ matrix.node }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - name: Setup Node
+      uses: actions/setup-node@v7
+      with:
+        node-version: ${{ matrix.node }}
+
+    - name: Install NPM Dependencies
+      run: npm install '@qooxdoo/framework@^8.0.0-beta' --no-package-lock
+
+    - name: Run Tests
+      run: npx qx test
