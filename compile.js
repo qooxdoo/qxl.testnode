@@ -96,6 +96,8 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           arr.forEach((val) => {
             if (val.match(/^\d+\.\.\d+$/)) {
               planSeen = true;
+              // the plan line is part of the TAP stream
+              qx.tool.compiler.Console.log(val);
               let endTime = performance.now();
               let timeDiff = endTime - startTime;
               qx.tool.compiler.Console.info(
