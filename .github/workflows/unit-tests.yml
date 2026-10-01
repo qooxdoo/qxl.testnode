@@ -25,9 +25,8 @@ jobs:
       fail-fast: false
 
     name: ${{ matrix.os }} Node ${{ matrix.node }}
-
+    runs-on: ${{ matrix.os }}
     steps:
-
     - name: Checkout
       uses: actions/checkout@v7
 
