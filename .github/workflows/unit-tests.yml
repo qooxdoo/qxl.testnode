@@ -36,6 +36,8 @@ jobs:
         node-version: ${{ matrix.node }}
 
     - name: Install NPM Dependencies
+      # bash: on Windows with Node 20, npm runs via npm.cmd, and cmd.exe drops the "^"
+      shell: bash
       run: npm install '@qooxdoo/framework@^8.0.0-beta' --no-package-lock
 
     - name: Run Tests
