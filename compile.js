@@ -79,7 +79,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
       args.push(boot);
       for (const arg of ["colorize", "verbose", "method", "class"]) {
         if (app.argv[arg]) {
-          args.push(` --${arg}=${app.argv[arg]}`);
+          args.push(`--${arg}=${app.argv[arg]}`);
         }
       }
       return new qx.Promise((resolve, reject) => {
@@ -90,9 +90,10 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           qx.tool.compiler.Console.log(`run node ${args}`);
         }
         let startTime = performance.now();
+        // no shell: the arguments reach node unchanged, so a --class or
+        // --method regular expression like "Test(A|B)" works
         let proc = child_process.spawn("node", args, {
-          cwd: ".",
-          shell: true,
+          cwd: "."
         });
 
         proc.stdout.on("data", (data) => {
