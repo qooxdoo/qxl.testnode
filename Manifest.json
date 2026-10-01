@@ -26,7 +26,7 @@
       "title": "Qooxdoo Testnode",
       "type": "node",
       "environment": {
-        "testnode.testNameSpace": "qxl.testnode.test"
+        "qxl.testnode.testNameSpace": "qxl.testnode.test"
       },
       "include": [
         "qx.core.BaseInit",
