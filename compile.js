@@ -58,9 +58,16 @@ qx.Class.define("qxl.testnode.LibraryApi", {
 
     __onRunTests(data) {
       let result = data.getData();
-      let app = this.getTestApp("qxl.testnode.Application");
+      let app;
+      try {
+        app = this.getTestApp("qxl.testnode.Application");
+      } catch (e) {
+        qx.tool.compiler.Console.error(e.message);
+        result.setExitCode(253);
+        return qx.Promise.resolve(false);
+      }
       if (!app) {
-        qx.tool.compiler.Console.log("Please install qxl.testnode package!");
+        // no testnode app in the groups selected with --app-group
         return qx.Promise.resolve(false);
       }
       qx.tool.compiler.Console.log("TAP version 13");
@@ -147,7 +154,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
       let argvAppGroups = command.argv["app-group"]
         ? command.argv["app-group"].split(",").map(s => s.trim())
         : null;
-      command.getMakers().forEach((tmp) => {
+      for (const tmp of command.getMakers()) {
         let apps = tmp
           .getApplications()
           .filter(
@@ -161,25 +168,24 @@ qx.Class.define("qxl.testnode.LibraryApi", {
         }
         if (apps.length) {
           if (maker) {
-            qx.tool.compiler.Console.print("qx.tool.cli.test.tooManyMakers");
-            return null;
+            throw new Error(
+              "Cannot run tests: the testnode application is in more than one target"
+            );
           }
           if (apps.length != 1) {
-            qx.tool.compiler.Console.print(
-              "qx.tool.cli.test.tooManyApplications"
+            throw new Error(
+              "Cannot run tests: there is more than one testnode application, select one with --app-group"
             );
-            return null;
           }
           maker = tmp;
           app = apps[0];
         }
-      });
+      }
       if (!app) {
         if (argvAppGroups) {
           return null;
         }
-        qx.tool.compiler.Console.print("qx.tool.cli.test.noAppName");
-        return null;
+        throw new Error("Please install qxl.testnode package!");
       }
       return {
         name: app.getName(),
