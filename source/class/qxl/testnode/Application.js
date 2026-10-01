@@ -118,7 +118,6 @@ qx.Class.define("qxl.testnode.Application", {
               this.error("Unexpected Error - ", item);
             }
           });
-          setTimeout(next, 0);
         };
         testResult.addListener("startTest", (evt) => {
           const name = evt.getData().getFullName();
