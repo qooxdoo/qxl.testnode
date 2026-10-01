@@ -147,6 +147,27 @@ qx.Class.define("qxl.testnode.LibraryApi", {
       });
     },
 
+    /**
+     * The groups of an application from compile.json. qooxdoo 8.0 beta
+     * keeps them only in the application's config entry; newer compilers
+     * also copy them into Application.getGroup().
+     */
+    __getAppGroups(app) {
+      let groups = typeof app.getGroup == "function" ? app.getGroup() : null;
+      if (!groups) {
+        let appConfigs =
+          this.getCompilerApi().getConfiguration().applications || [];
+        let appConfig = appConfigs.find(
+          (c) => c.app === app || (c.name && c.name === app.getName())
+        );
+        groups = appConfig?.group;
+      }
+      if (typeof groups == "string") {
+        groups = [groups];
+      }
+      return groups || [];
+    },
+
     getTestApp(classname) {
       let command = this.getCompilerApi().getCommand();
       let maker = null;
@@ -162,7 +183,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
           );
         if (argvAppGroups) {
           apps = apps.filter(app => {
-            let groups = app.getGroup() || [];
+            let groups = this.__getAppGroups(app);
             return argvAppGroups.some(g => groups.includes(g));
           });
         }
