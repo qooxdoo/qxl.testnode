@@ -58,12 +58,16 @@ qx.Class.define("qxl.testnode.LibraryApi", {
 
     __onRunTests(data) {
       let result = data.getData();
+      // other test parts (for example integration tests registered in
+      // compile.js) may have set an exit code already: only ever raise it
+      const fail = (code) =>
+        result.setExitCode(Math.max(result.getExitCode() || 0, code));
       let app;
       try {
         app = this.getTestApp("qxl.testnode.Application");
       } catch (e) {
         qx.tool.compiler.Console.error(e.message);
-        result.setExitCode(253);
+        fail(253);
         return qx.Promise.resolve(false);
       }
       if (!app) {
@@ -148,9 +152,9 @@ qx.Class.define("qxl.testnode.LibraryApi", {
               `The test process ended before all tests had run (exit code ${code}, signal ${signal})`
             );
             // same code as qxl.testtapper uses for an exception during test
-            result.setExitCode(253);
+            fail(253);
           } else if (notOk > 0) {
-            result.setExitCode(notOk);
+            fail(notOk);
           } else if (Ok + skipped == 0) {
             // a mistyped --class, --method or test namespace must not
             // look like a pass
@@ -159,7 +163,7 @@ qx.Class.define("qxl.testnode.LibraryApi", {
                 ? "No tests matched the --class or --method filter"
                 : "No tests found, check the qxl.testnode.testNameSpace setting"
             );
-            result.setExitCode(1);
+            fail(1);
           }
           resolve();
         });
