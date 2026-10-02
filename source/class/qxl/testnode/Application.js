@@ -26,7 +26,8 @@ qx.Class.define("qxl.testnode.Application", {
       const { parseArgs } = require("util");
       const { values: argv } = parseArgs({ strict: false });
       await this.runTest(argv);
-      process.exit(this._fail);
+      // exit codes have 8 bits: 256 failures would exit with 0
+      process.exit(Math.min(this._fail, 255));
     },
 
     async runTest(argv) {
