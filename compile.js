@@ -151,6 +151,12 @@ qx.Class.define("qxl.testnode.LibraryApi", {
             result.setExitCode(253);
           } else if (notOk > 0) {
             result.setExitCode(notOk);
+          } else if (Ok + skipped == 0 && (app.argv.class || app.argv.method)) {
+            // a mistyped --class or --method must not look like a pass
+            qx.tool.compiler.Console.error(
+              "No tests matched the --class or --method filter"
+            );
+            result.setExitCode(1);
           }
           resolve();
         });
